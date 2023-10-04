@@ -1,0 +1,39 @@
+<?php
+// Nome do arquivo do banco de dados SQLite
+$databaseFile = 'filmes.db';
+
+try {
+    // Conectar ao banco de dados SQLite ou criá-lo se não existir
+    $db = new PDO("sqlite:$databaseFile");
+    
+    // Definir o modo de erro para exceções
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Criar a tabela de Categorias
+    $db->exec("CREATE TABLE IF NOT EXISTS Categorias (
+        categoria_id INTEGER PRIMARY KEY,
+        nome_categoria TEXT
+    )");
+    
+    // Criar a tabela de Filmes
+    $db->exec("CREATE TABLE IF NOT EXISTS Filmes (
+        filme_id INTEGER PRIMARY KEY,
+        titulo TEXT,
+        ano_lancamento INTEGER,
+        categoria_id INTEGER,
+        FOREIGN KEY (categoria_id) REFERENCES Categorias(categoria_id)
+    )");
+    
+    // Inserir dados de exemplo na tabela de Categorias
+    $db->exec("INSERT INTO Categorias (nome_categoria) VALUES ('Ação')");
+    $db->exec("INSERT INTO Categorias (nome_categoria) VALUES ('Comédia')");
+    
+    // Inserir dados de exemplo na tabela de Filmes
+    $db->exec("INSERT INTO Filmes (titulo, ano_lancamento, categoria_id) VALUES ('Filme de Ação', 2022, 1)");
+    $db->exec("INSERT INTO Filmes (titulo, ano_lancamento, categoria_id) VALUES ('Comédia Engraçada', 2021, 2)");
+    
+    echo "Banco de dados e tabelas criadas com sucesso.";
+} catch (PDOException $e) {
+    die("Erro ao criar o banco de dados: " . $e->getMessage());
+}
+?>
